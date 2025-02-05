@@ -1,9 +1,9 @@
 print("There are ", 10, " apples in my basket.");
 print("Your total money spent is: ", (3.11+2.11+4.56))
 
-print("There are %d people in this room." % 28)
+print("There are %d people in this room." % 500)
 print("Pi is equal to %f" % 3.1416)
-print("%s's final score is %d" % ("Joe", 215))
+print("%s's final score is %d" % ("Joe", 1))
 
 print("Total money spent is: %.2f" % (2.75+9.32+11.91))
 print("The area of a circle of radius %d is %f" % (4, 3.1416*4*4))
