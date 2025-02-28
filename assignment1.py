@@ -29,7 +29,7 @@ print("\nLet's make change using the fewest coins possible!")
 # Step 5: Input amount in cents
 cents = int(input("Please enter the amount of change in cents: "))
 
-# Step 6: Determine the coin distribution
+# Step 6: Determine how the coins will be distributed
 if cents >= 100:
     cents = cents % 100  # Ensure amount is less than $1.00
 
