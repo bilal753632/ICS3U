@@ -1,6 +1,6 @@
 import random
 
-# Generate a random number between 1 and 100 (inclusive)
+# Generate a random number between 1 and 100 
 a = random.randrange(1, 101)
 
 # Introduction and instructions
@@ -18,7 +18,7 @@ while c <= 6 and x != a:
         # Prompt the user to make a guess
         x = int(input(f"Guess #{c}: "))
     except ValueError:
-        # Handle non-integer input gracefully
+        # Handle non-integer input 
         print("Please enter a valid integer.")
         continue  # Skip the rest of the loop and prompt again
 
