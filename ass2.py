@@ -1,4 +1,13 @@
-import random
+###Assignment 2: Number Guessing Game
+"""
+Author : Bilal Siddiqui
+Student Number: 753632
+Revision Date : 7 April 2025
+Program : Number Guessing Game
+Description : A game that has the user guess a number that the program generates by letting them know if their guess is higher or lower then the number in 6 guesses
+"""
+
+    import random
 
 # Generate a random number between 1 and 100 
 a = random.randrange(1, 101)
