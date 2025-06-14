@@ -1,80 +1,79 @@
-# -----------------------------
+# ---------------------------
 # Name: Bilal Siddiqui
-# Course Code: ICS3U
+# Course: ICS3U
 # Student Number: 753632
 # Teacher: Mr. King
 # Date: June 6, 2025
-# Final Project: Credit Card Report
-# -----------------------------
+# Program: Credit Card Expiry Report
+# ---------------------------
 
-# This program reads credit card data from a file and finds all customers
-# whose cards expire on or before June 2025. It outputs their info sorted by expiry date.
+# This program reads credit card data from a file and writes a report of cards
+# that are expired or need renewal (before or during June 2025).
 
-# Constants for expiry threshold
-EXPIRY_CUTOFF_YEAR = 2025
-EXPIRY_CUTOFF_MONTH = 6
-EXPIRY_CUTOFF_DATE = EXPIRY_CUTOFF_YEAR * 100 + EXPIRY_CUTOFF_MONTH
+# Constants
+CURRENT_MONTH = 6
+CURRENT_YEAR = 2025
+CUTOFF_DATE = CURRENT_YEAR * 100 + CURRENT_MONTH  # 202506
 
-# File names
-INPUT_FILE = "data.dat"
-OUTPUT_FILE = "output.txt"
-
-# Lists to store data
+# Arrays to hold data
 first_names = []
 last_names = []
-cc_types = []
-cc_numbers = []
-exp_months = []
-exp_years = []
-exp_dates = []
+card_types = []
+card_numbers = []
+expiries = []
 
-# Read data from file
 try:
-    with open(INPUT_FILE, "r") as file:
-        next(file)  # Skip the header line
+    with open("data.dat", "r") as file:
+        next(file)  # Skip header line
         for line in file:
             parts = line.strip().split(",")
             if len(parts) != 6:
-                continue  # Skip malformed lines
+                continue  # skip malformed lines
 
-            first_names.append(parts[0])
-            last_names.append(parts[1])
-            cc_types.append(parts[2])
-            cc_numbers.append(parts[3])
-            exp_month = int(parts[4])
-            exp_year = int(parts[5])
-            exp_months.append(exp_month)
-            exp_years.append(exp_year)
-            exp_dates.append(exp_year * 100 + exp_month)
+            fname = parts[0].strip()
+            lname = parts[1].strip()
+            card_type = parts[2].strip()
+            card_number = parts[3].strip()
+            exp_month = int(parts[4].strip())
+            exp_year = int(parts[5].strip())
+            expiry = exp_year * 100 + exp_month  # Convert to sortable format
+
+            if expiry <= CUTOFF_DATE:
+                # Store valid expired/pending data
+                first_names.append(fname)
+                last_names.append(lname)
+                card_types.append(card_type)
+                card_numbers.append(card_number)
+                expiries.append(expiry)
 
 except FileNotFoundError:
-    print(f"❌ Error: File '{INPUT_FILE}' not found.")
+    print("❌ ERROR: data.dat file not found.")
+    exit()
+except Exception as e:
+    print("❌ ERROR while reading file:", e)
     exit()
 
-# Determine which customers need to update their cards
-need_update = []
+# --- Exchange Sort (by expiry date) ---
+n = len(expiries)
+for i in range(n - 1):
+    for j in range(i + 1, n):
+        if expiries[j] < expiries[i]:
+            # Swap everything
+            expiries[i], expiries[j] = expiries[j], expiries[i]
+            first_names[i], first_names[j] = first_names[j], first_names[i]
+            last_names[i], last_names[j] = last_names[j], last_names[i]
+            card_types[i], card_types[j] = card_types[j], card_types[i]
+            card_numbers[i], card_numbers[j] = card_numbers[j], card_numbers[i]
 
-for i in range(len(exp_dates)):
-    if exp_dates[i] <= EXPIRY_CUTOFF_DATE:
-        need_update.append(i)
-
-# Sort the list of indexes by expiry date using exchange sort
-for i in range(len(need_update)):
-    for j in range(i + 1, len(need_update)):
-        if exp_dates[need_update[j]] < exp_dates[need_update[i]]:
-            need_update[i], need_update[j] = need_update[j], need_update[i]
-
-# Output results to file
-with open(OUTPUT_FILE, "w") as out_file:
-    for i in need_update:
-        name = f"{first_names[i]} {last_names[i]}"
-        ctype = cc_types[i]
-        cnum = "#" + cc_numbers[i]
-        exp = f"{exp_years[i]:04d}{exp_months[i]:02d}"
-        status = "EXPIRED" if exp_dates[i] < EXPIRY_CUTOFF_DATE else "RENEW IMMEDIATELY"
-        out_file.write(f"{name:<20} {ctype:<12} {cnum} {exp} {status}\n")
-
-print("✅ Credit card report generated: output.txt")
-
+# --- Write Output Report ---
+try:
+    with open("output.txt", "w") as output:
+        for i in range(n):
+            exp_str = str(expiries[i])
+            year = exp_str[:4]
+            month = exp_str[4:].zfill(2)
+            status = "EXPIRED" if expiries[i] < CUTOFF_DATE else "RENEW IMMEDIATELY"
+            output.write(f"{first_names[i]} {last_names[i]:<15} {card_types[i]:<12} #{card_numbers[i]} {year}{month} {status}\n")
+    print("✅ Credit card report generated: output.txt")
 except Exception as e:
-    print(f"❌ An unexpected error occurred: {e}")
+    print("❌ ERROR writing output file:", e)
